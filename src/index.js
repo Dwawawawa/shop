@@ -1,76 +1,27 @@
-/*eslint-disable*/
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
 import { BrowserRouter } from 'react-router-dom';
-
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import store from './store';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-let alert초기값 = true;
+const queryClient = new QueryClient();
 
-function reducer2(state = alert초기값, 액션) {
-  if(액션.type === 'alert닫기') {
-    state = false;
-    return state;
-  } else {
-    return state;
-  }
-}
-
-
-let 초기값 = [
-  { id : 0, name : '멋진신발', quan : 2 },
-  { id : 1, name : '멋진신발2', quan : 1 }
-];
-
-
-function reducer(state = 초기값, 액션) {
-  if( 액션.type === '항목추가') {
-
-    // state안에 id : 액션.데이터 인게 있나?
-    let found = state.findIndex((a) => { return a.id === 액션.데이터.id });
-
-    if(found >= 0) {
-      let copy = [...state];
-      copy[found].quan++;
-      return copy
-    } else {
-      let copy = [...state];
-      copy.push(액션.데이터);
-      return copy
-    }
-
-  } else if( 액션.type === '수량증가') {
-
-    let copy = [...state];
-    copy[액션.데이터].quan++;
-    return copy
-
-  } else if( 액션.type === '수량감소') {
-
-    let copy = [...state];
-    copy[액션.데이터].quan--;
-    return copy
-
-  } else {
-    return state
-  }
-}
-
-let store = createStore(combineReducers({ reducer, reducer2 }));
-
-
-ReactDOM.render(
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>,
-  document.getElementById('root')
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+	// StrictMode 켜놓으면 디버깅을 위해 useEffect등 특정 코드가 두번 실행될 수 있음
+	// <React.StrictMode>
+	<QueryClientProvider client={queryClient}>
+		<Provider store={store}>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</Provider>
+	</QueryClientProvider>,
+	// </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function
